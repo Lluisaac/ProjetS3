@@ -1,5 +1,6 @@
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Random;
 
 public class Topo {
 
@@ -37,6 +38,35 @@ public class Topo {
 			ajoutCreux(temp, x, y + 1, pente);
 		}
 	}
+	
+	public void ajoutChaineMontagne(int x1, int y1, int x2, int y2, int nb) {
+		 int x3 = (x2 - x1)/nb;
+		 int y3 = (y2 - y1)/nb;
+		 
+		 Random rand = new Random();
+		 
+		 for (int i = 0; i < nb; i++) {
+			 int x = x1+(x3*i)+(x3/2);
+			 int y = y1+(y3*i)+(x3/2);
+			 
+			 this.ajoutPic(rand.nextInt(40) + 80, x, y, (rand.nextInt(20)+70)/100f);
+		 }
+	}
+	
+	public void ajoutFalaise(int x1, int y1, int x2, int y2, int nb) {
+		 int x3 = (x2 - x1)/nb;
+		 int y3 = (y2 - y1)/nb;
+		 
+		 Random rand = new Random();
+		 
+		 for (int i = 0; i < nb; i++) {
+			 int x = x1+(x3*i)+(x3/2);
+			 int y = y1+(y3*i)+(x3/2);
+			 
+			 this.ajoutCreux(-(rand.nextInt(40) + 80), x, y, (rand.nextInt(20)+70)/100f);
+		 }
+	}
+	
 
 	public void toFile(int max) {
 		try {
@@ -47,14 +77,6 @@ public class Topo {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public void ajoutChaineMontagne(int x1, int y1, int x2, int y2) {
-		
-	}
-	
-	public void ajoutFalaise(int x1, int y1, int x2, int y2) {
-		
 	}
 
 	public String toString() {
@@ -73,9 +95,8 @@ public class Topo {
 
 	public static void main(String[] args) {
 		Topo topo = new Topo(64, 64);
-		topo.ajoutPic(127f, 2, 4, 0.90f);
-		topo.ajoutPic(100f, 10, 8, 0.70f);
-		topo.ajoutCreux(-100f, 55, 55, 0.90f);
+		topo.ajoutFalaise(0, 0, 33, 63, 6);
+		topo.ajoutChaineMontagne(63, 0, 0, 33, 8);
 		topo.toFile(255);
 		System.out.println("Done!");
 	}
