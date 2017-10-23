@@ -3,7 +3,10 @@ import java.io.IOException;
 import java.util.Random;
 
 public class Topo {
-
+	
+	//Ces dla merd
+	
+	
 	private int[][] image;
 
 	public Topo(int x, int y) {
