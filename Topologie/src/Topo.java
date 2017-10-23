@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Topo {
 	
-	//Ces dla merd
+	//Non c'est pas vrai, et pis tu fais des fautes d'orthographe, espèce de pédéraste
 	
 	
 	private int[][] image;
