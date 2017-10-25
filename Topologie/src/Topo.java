@@ -2,10 +2,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
-public class Topo {
-	
-	//Non c'est pas vrai, et pis tu fais des fautes d'orthographe, espèce de pédéraste
-	
+public class Topo {	
 	
 	private int[][] image;
 
@@ -13,7 +10,7 @@ public class Topo {
 		this.image = new int[x][y];
 		for (int i = 0; i < this.image.length; i++) {
 			for (int j = 0; j < this.image.length; j++) {
-				this.image[i][j] = 0;
+				this.image[i][j] = 127;
 			}
 		}
 	}
@@ -21,24 +18,14 @@ public class Topo {
 	public void ajoutPic(float hauteur, int x, int y, float pente) {
 		if (hauteur > 0 && x >= 0 && x < this.image.length && y >= 0 && y < this.image.length
 				&& this.image[x][y] <= hauteur) {
-			int temp = (int) (hauteur * pente);
+			
+			int temp = (int) ((hauteur - (hauteur * pente))/2 + (hauteur * pente));			
 			this.image[x][y] = (int) hauteur;
+			
 			ajoutPic(temp, x + 1, y, pente);
 			ajoutPic(temp, x - 1, y, pente);
 			ajoutPic(temp, x, y - 1, pente);
 			ajoutPic(temp, x, y + 1, pente);
-		}
-	}
-
-	public void ajoutCreux(float hauteur, int x, int y, float pente) {
-		if (hauteur < 0 && x >= 0 && x < this.image.length && y >= 0 && y < this.image.length
-				&& this.image[x][y] > hauteur) {
-			int temp = (int) (hauteur * pente);
-			this.image[x][y] = (int) hauteur;
-			ajoutCreux(temp, x + 1, y, pente);
-			ajoutCreux(temp, x - 1, y, pente);
-			ajoutCreux(temp, x, y - 1, pente);
-			ajoutCreux(temp, x, y + 1, pente);
 		}
 	}
 	
@@ -52,8 +39,20 @@ public class Topo {
 			 int x = x1+(x3*i)+(x3/2);
 			 int y = y1+(y3*i)+(x3/2);
 			 
-			 this.ajoutPic(rand.nextInt(40) + 80, x, y, (rand.nextInt(20)+70)/100f);
+			 this.ajoutPic(rand.nextInt(56) + 200, x, y, (rand.nextInt(20)+70)/100f);
 		 }
+	}
+	
+	public void ajoutCreux(float hauteur, int x, int y, float pente) {
+		if (hauteur < 0 && x >= 0 && x < this.image.length && y >= 0 && y < this.image.length
+				&& this.image[x][y] > hauteur) {
+			int temp = (int) (hauteur * pente);
+			this.image[x][y] = (int) hauteur;
+			ajoutCreux(temp, x + 1, y, pente);
+			ajoutCreux(temp, x - 1, y, pente);
+			ajoutCreux(temp, x, y - 1, pente);
+			ajoutCreux(temp, x, y + 1, pente);
+		}
 	}
 	
 	public void ajoutFalaise(int x1, int y1, int x2, int y2, int nb) {
@@ -87,7 +86,6 @@ public class Topo {
 
 		for (int i = 0; i < this.image.length; i++) {
 			for (int j = 0; j < this.image.length; j++) {
-				this.image[i][j] += 127;
 				r += this.image[i][j] + " ";
 			}
 
@@ -98,8 +96,9 @@ public class Topo {
 
 	public static void main(String[] args) {
 		Topo topo = new Topo(64, 64);
-		topo.ajoutFalaise(0, 0, 33, 63, 6);
-		topo.ajoutChaineMontagne(63, 0, 0, 33, 8);
+		topo.ajoutPic(255, 15, 47, 0.90f);
+		//topo.ajoutFalaise(0, 0, 33, 63, 6);
+		topo.ajoutChaineMontagne(0, 0, 63, 63, 8);
 		topo.toFile(255);
 		System.out.println("Done!");
 	}
