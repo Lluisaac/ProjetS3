@@ -1,6 +1,9 @@
-import java.io.FileOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 public class Topo {	
 	
@@ -71,11 +74,17 @@ public class Topo {
 	
 
 	public void toFile(int max) {
+		BufferedImage img = new BufferedImage(this.image.length, this.image[0].length, BufferedImage.TYPE_BYTE_GRAY);
+		
+		for (int i = 0; i < this.image.length; i++) {
+			for (int j = 0; j < this.image.length; j++) {
+				img.setRGB(i, j, (this.image[i][j] * 256 * 256) + (this.image[i][j] * 256) + (this.image[i][j]));
+			}
+		}
+		
 		try {
-			FileOutputStream fichier = new FileOutputStream("Topo.pgm");
-			String r = "P2\n" + this.image.length + " " + this.image[0].length + "\n" + max + "\n" + this.toString();
-			fichier.write(r.getBytes());
-			fichier.close();
+			File f = new File("topo.png");
+			ImageIO.write(img, "PNG", f);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
