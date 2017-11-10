@@ -47,9 +47,9 @@ public class Topo {
 	}
 	
 	public void ajoutCreux(float hauteur, int x, int y, float pente) {
-		if (hauteur < 0 && x >= 0 && x < this.image.length && y >= 0 && y < this.image.length
+		if (hauteur > 0 && x >= 0 && x < this.image.length && y >= 0 && y < this.image.length
 				&& this.image[x][y] > hauteur) {
-			int temp = (int) (hauteur * pente);
+			int temp = (int) ((hauteur - (hauteur / pente))/2 + (hauteur / pente));
 			this.image[x][y] = (int) hauteur;
 			ajoutCreux(temp, x + 1, y, pente);
 			ajoutCreux(temp, x - 1, y, pente);
@@ -67,13 +67,12 @@ public class Topo {
 		 for (int i = 0; i < nb; i++) {
 			 int x = x1+(x3*i)+(x3/2);
 			 int y = y1+(y3*i)+(x3/2);
-			 
-			 this.ajoutCreux(-(rand.nextInt(40) + 80), x, y, (rand.nextInt(20)+70)/100f);
+			 this.ajoutCreux(rand.nextInt(56), x, y, (rand.nextInt(20)+70)/100f);
 		 }
 	}
 	
 
-	public void toFile(int max) {
+	public void toFile(String nom) {
 		BufferedImage img = new BufferedImage(this.image.length, this.image[0].length, BufferedImage.TYPE_BYTE_GRAY);
 		
 		for (int i = 0; i < this.image.length; i++) {
@@ -83,7 +82,7 @@ public class Topo {
 		}
 		
 		try {
-			File f = new File("topo.png");
+			File f = new File(nom + ".png");
 			ImageIO.write(img, "PNG", f);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -105,10 +104,9 @@ public class Topo {
 
 	public static void main(String[] args) {
 		Topo topo = new Topo(64, 64);
-		topo.ajoutPic(255, 15, 47, 0.90f);
-		//topo.ajoutFalaise(0, 0, 33, 63, 6);
-		topo.ajoutChaineMontagne(0, 0, 63, 63, 8);
-		topo.toFile(255);
+		topo.ajoutFalaise(0, 0, 63, 63, 6);
+		topo.ajoutChaineMontagne(0, 63, 63, 0, 8);
+		topo.toFile("Topo");
 		System.out.println("Done!");
 	}
 
