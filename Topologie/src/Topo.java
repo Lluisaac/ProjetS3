@@ -5,8 +5,8 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-public class Topo {	
-	
+public class Topo {
+
 	private int[][] image;
 
 	public Topo(int x, int y) {
@@ -21,35 +21,35 @@ public class Topo {
 	public void ajoutPic(float hauteur, int x, int y, float pente) {
 		if (hauteur > 0 && x >= 0 && x < this.image.length && y >= 0 && y < this.image.length
 				&& this.image[x][y] <= hauteur) {
-			
-			int temp = (int) ((hauteur - (hauteur * pente))/2 + (hauteur * pente));			
+
+			int temp = (int) ((hauteur - (hauteur * pente)) / 2 + (hauteur * pente));
 			this.image[x][y] = (int) hauteur;
-			
+
 			ajoutPic(temp, x + 1, y, pente);
 			ajoutPic(temp, x - 1, y, pente);
 			ajoutPic(temp, x, y - 1, pente);
 			ajoutPic(temp, x, y + 1, pente);
 		}
 	}
-	
+
 	public void ajoutChaineMontagne(int x1, int y1, int x2, int y2, int nb) {
-		 int x3 = (x2 - x1)/nb;
-		 int y3 = (y2 - y1)/nb;
-		 
-		 Random rand = new Random();
-		 
-		 for (int i = 0; i < nb; i++) {
-			 int x = x1+(x3*i)+(x3/2);
-			 int y = y1+(y3*i)+(x3/2);
-			 
-			 this.ajoutPic(rand.nextInt(56) + 200, x, y, (rand.nextInt(20)+70)/100f);
-		 }
+		int x3 = (x2 - x1) / nb;
+		int y3 = (y2 - y1) / nb;
+
+		Random rand = new Random();
+
+		for (int i = 0; i < nb; i++) {
+			int x = x1 + (x3 * i) + (x3 / 2);
+			int y = y1 + (y3 * i) + (x3 / 2);
+
+			this.ajoutPic(rand.nextInt(56) + 200, x, y, (rand.nextInt(20) + 70) / 100f);
+		}
 	}
-	
+
 	public void ajoutCreux(float hauteur, int x, int y, float pente) {
 		if (hauteur > 0 && x >= 0 && x < this.image.length && y >= 0 && y < this.image.length
 				&& this.image[x][y] > hauteur) {
-			int temp = (int) ((hauteur - (hauteur / pente))/2 + (hauteur / pente));
+			int temp = (int) ((hauteur - (hauteur / pente)) / 2 + (hauteur / pente));
 			this.image[x][y] = (int) hauteur;
 			ajoutCreux(temp, x + 1, y, pente);
 			ajoutCreux(temp, x - 1, y, pente);
@@ -57,30 +57,77 @@ public class Topo {
 			ajoutCreux(temp, x, y + 1, pente);
 		}
 	}
-	
+
 	public void ajoutFalaise(int x1, int y1, int x2, int y2, int nb) {
-		 int x3 = (x2 - x1)/nb;
-		 int y3 = (y2 - y1)/nb;
-		 
-		 Random rand = new Random();
-		 
-		 for (int i = 0; i < nb; i++) {
-			 int x = x1+(x3*i)+(x3/2);
-			 int y = y1+(y3*i)+(x3/2);
-			 this.ajoutCreux(rand.nextInt(56), x, y, (rand.nextInt(20)+70)/100f);
-		 }
+		int x3 = (x2 - x1) / nb;
+		int y3 = (y2 - y1) / nb;
+
+		Random rand = new Random();
+
+		for (int i = 0; i < nb; i++) {
+			int x = x1 + (x3 * i) + (x3 / 2);
+			int y = y1 + (y3 * i) + (x3 / 2);
+			this.ajoutCreux(rand.nextInt(56), x, y, (rand.nextInt(20) + 70) / 100f);
+		}
 	}
-	
+
+	public void ajoutRiviere(int x, int y) {
+		// pas d'image vide
+
+		int[] caseVoisines = new int[4];
+
+		if (y != 0) {
+			caseVoisines[0] = this.image[x][y - 1]; // haut
+		}
+		if (x != this.image.length - 1) {
+			caseVoisines[1] = this.image[x + 1][y]; // droite
+		}
+		if (y != this.image[0].length - 1) {
+			caseVoisines[2] = this.image[x][y + 1]; // bas
+		}
+		if (x != 0) {
+			caseVoisines[3] = this.image[x - 1][y]; // gauche
+		}
+
+		if (y != 0 && caseVoisines[0] < this.image[x][y] && caseVoisines[0] < caseVoisines[1]
+				&& caseVoisines[0] < caseVoisines[2] && caseVoisines[0] < caseVoisines[3]) {
+			// this.image[x][y-1].rivere = true;
+			this.image[x][y - 1] = 0;
+
+			ajoutRiviere(x, y - 1);
+		} else if (x != this.image.length - 1 && caseVoisines[1] < this.image[x][y] && caseVoisines[1] < caseVoisines[0]
+				&& caseVoisines[1] < caseVoisines[2] && caseVoisines[1] < caseVoisines[3]) {
+			// this.image[x+1][y].rivere = true;
+			this.image[x + 1][y] = 0;
+
+			ajoutRiviere(x + 1, y);
+		} else if (y != this.image[0].length - 1 && caseVoisines[2] < this.image[x][y]
+				&& caseVoisines[2] < caseVoisines[1] && caseVoisines[2] < caseVoisines[0]
+				&& caseVoisines[2] < caseVoisines[3]) {
+			// this.image[x][y+1].rivere = true;
+			this.image[x][y + 1] = 0;
+			ajoutRiviere(x, y + 1);
+		} else if (x != 0 && caseVoisines[3] < this.image[x][y] && caseVoisines[3] < caseVoisines[1]
+				&& caseVoisines[3] < caseVoisines[2] && caseVoisines[3] < caseVoisines[0]) {
+			// this.image[x-1][y].rivere = true;
+			this.image[x - 1][y] = 0;
+			ajoutRiviere(x - 1, y);
+		} else {
+			// stop l'appel récursif
+		}
+		;
+
+	}
 
 	public void toFile(String nom) {
 		BufferedImage img = new BufferedImage(this.image.length, this.image[0].length, BufferedImage.TYPE_BYTE_GRAY);
-		
+
 		for (int i = 0; i < this.image.length; i++) {
 			for (int j = 0; j < this.image.length; j++) {
 				img.setRGB(i, j, (this.image[i][j] * 256 * 256) + (this.image[i][j] * 256) + (this.image[i][j]));
 			}
 		}
-		
+
 		try {
 			File f = new File(nom + ".png");
 			ImageIO.write(img, "PNG", f);
