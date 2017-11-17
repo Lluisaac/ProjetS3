@@ -7,23 +7,23 @@ import javax.imageio.ImageIO;
 
 public class Topo {
 
-	private int[][] image;
+	private Case[][] image;
 
 	public Topo(int x, int y) {
-		this.image = new int[x][y];
+		this.image = new Case[x][y];
 		for (int i = 0; i < this.image.length; i++) {
 			for (int j = 0; j < this.image.length; j++) {
-				this.image[i][j] = 127;
+				this.image[i][j] = new Terre(127);
 			}
 		}
 	}
 
 	public void ajoutPic(float hauteur, int x, int y, float pente) {
 		if (hauteur > 0 && x >= 0 && x < this.image.length && y >= 0 && y < this.image.length
-				&& this.image[x][y] <= hauteur) {
+				&& this.image[x][y].getHauteur() <= hauteur) {
 
 			int temp = (int) ((hauteur - (hauteur * pente)) / 2 + (hauteur * pente));
-			this.image[x][y] = (int) hauteur;
+			this.image[x][y].setHauteur((int) hauteur);
 
 			ajoutPic(temp, x + 1, y, pente);
 			ajoutPic(temp, x - 1, y, pente);
@@ -48,9 +48,9 @@ public class Topo {
 
 	public void ajoutCreux(float hauteur, int x, int y, float pente) {
 		if (hauteur > 0 && x >= 0 && x < this.image.length && y >= 0 && y < this.image.length
-				&& this.image[x][y] > hauteur) {
+				&& this.image[x][y].getHauteur() > hauteur) {
 			int temp = (int) ((hauteur - (hauteur / pente)) / 2 + (hauteur / pente));
-			this.image[x][y] = (int) hauteur;
+			this.image[x][y].setHauteur((int) hauteur);
 			ajoutCreux(temp, x + 1, y, pente);
 			ajoutCreux(temp, x - 1, y, pente);
 			ajoutCreux(temp, x, y - 1, pente);
@@ -70,56 +70,64 @@ public class Topo {
 			this.ajoutCreux(rand.nextInt(56), x, y, (rand.nextInt(20) + 70) / 100f);
 		}
 	}
+	
+	public void ajoutPente(int x1, int y1, int x2, int y2, int nb) {
+		for (int x = x1; x < x2+1; x++) {
+			for (int y = y1; y < y2+1; y++) {
+				this.image[x][y].setHauteur(nb);
+			}
+		}
+	}
 
 	public void ajoutRiviere(int x, int y) {
 		// pas d'image vide
-		this.image[x][y] = 255;
+		this.image[x][y] = new Riviere(this.image[x][y].getHauteur());
 		
 		int[] caseVoisines = new int[4];
 		
-		//Si une case d'à côté est hors du tableau, la rivière s'arrête la.
+		//Si une case d'ï¿½ cï¿½tï¿½ est hors du tableau, la riviï¿½re s'arrï¿½te la.
 		if (y > 0) {
-			caseVoisines[0] = this.image[x][y - 1]; // haut
+			caseVoisines[0] = this.image[x][y - 1].getHauteur(); // haut
 		}
 		else {
 			return;
 		}
 		
 		if (x < this.image.length - 1) {
-			caseVoisines[1] = this.image[x + 1][y]; // droite
+			caseVoisines[1] = this.image[x + 1][y].getHauteur(); // droite
 		}
 		else {
 			return;
 		}
 		
 		if (y < this.image[0].length - 1) {
-			caseVoisines[2] = this.image[x][y + 1]; // bas
+			caseVoisines[2] = this.image[x][y + 1].getHauteur(); // bas
 		}
 		else {
 			return;
 		}
 		
 		if (x > 0) {
-			caseVoisines[3] = this.image[x - 1][y]; // gauche
+			caseVoisines[3] = this.image[x - 1][y].getHauteur(); // gauche
 		}
 		else {
 			return;
 		}
 
-		if (y > 0 && caseVoisines[0] <= this.image[x][y] && caseVoisines[0] <= caseVoisines[1]
+		if (y > 0 && caseVoisines[0] <= this.image[x][y].getHauteur() && caseVoisines[0] <= caseVoisines[1]
 				&& caseVoisines[0] <= caseVoisines[2] && caseVoisines[0] <= caseVoisines[3]) {
 			ajoutRiviere(x, y - 1);
 		} 
-		else if (x < this.image.length - 1 && caseVoisines[1] <= this.image[x][y] && caseVoisines[1] <= caseVoisines[0]
+		else if (x < this.image.length - 1 && caseVoisines[1] <= this.image[x][y].getHauteur() && caseVoisines[1] <= caseVoisines[0]
 				&& caseVoisines[1] <= caseVoisines[2] && caseVoisines[1] <= caseVoisines[3]) {
 			ajoutRiviere(x + 1, y);
 		} 
-		else if (y < this.image[0].length - 1 && caseVoisines[2] <= this.image[x][y]
+		else if (y < this.image[0].length - 1 && caseVoisines[2] <= this.image[x][y].getHauteur()
 				&& caseVoisines[2] <= caseVoisines[1] && caseVoisines[2] <= caseVoisines[0]
 				&& caseVoisines[2] <= caseVoisines[3]) {
 			ajoutRiviere(x, y + 1);
 		} 
-		else if (x > 0 && caseVoisines[3] <= this.image[x][y] && caseVoisines[3] <= caseVoisines[1]
+		else if (x > 0 && caseVoisines[3] <= this.image[x][y].getHauteur() && caseVoisines[3] <= caseVoisines[1]
 				&& caseVoisines[3] <= caseVoisines[2] && caseVoisines[3] <= caseVoisines[0]) {
 			ajoutRiviere(x - 1, y);
 		}
@@ -127,11 +135,11 @@ public class Topo {
 	}
 
 	public void toFile(String nom) {
-		BufferedImage img = new BufferedImage(this.image.length, this.image[0].length, BufferedImage.TYPE_BYTE_GRAY);
+		BufferedImage img = new BufferedImage(this.image.length, this.image[0].length, BufferedImage.TYPE_INT_ARGB);
 
 		for (int i = 0; i < this.image.length; i++) {
 			for (int j = 0; j < this.image.length; j++) {
-				img.setRGB(i, j, (this.image[i][j] * 256 * 256) + (this.image[i][j] * 256) + (this.image[i][j]));
+				img.setRGB(i, j, this.image[i][j].getCouleur());
 			}
 		}
 
@@ -161,7 +169,7 @@ public class Topo {
 		//topo.ajoutFalaise(0, 0, 63, 63, 6);
 		topo.ajoutChaineMontagne(0, 0, 63, 63, 11);
 		topo.ajoutChaineMontagne(63, 0, 0, 63, 1);
-		topo.ajoutRiviere(15, 15);
+		topo.ajoutRiviere(32, 20);
 		topo.toFile("Topo");
 		System.out.println("Done!");
 	}
