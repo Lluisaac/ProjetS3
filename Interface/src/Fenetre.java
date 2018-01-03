@@ -13,7 +13,6 @@ public class Fenetre extends JFrame{
     this.setLocationRelativeTo(null);
 
     JPanel b2 = new JPanel();
-    //Idem pour cette ligne
     b2.setLayout(new BoxLayout(b2, BoxLayout.LINE_AXIS));
     b2.add(new JButton("Lancer Programme"));
     b2.add(new JButton("Charger Topo"));
