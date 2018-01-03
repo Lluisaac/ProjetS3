@@ -6,9 +6,13 @@ public class Fenetre extends JFrame {
 	
 	public Fenetre(){
 		
+		// Définir le titre de la fenêtre
 		this.setTitle("LoadRoad");
+		// Dimension de la fenêtre
 		this.setSize(400, 500);
+		// Centrer l'appartition de la fenêtre
 		this.setLocationRelativeTo(null);
+		// Fermer la fenêtre sur clique sur croix
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//Instanciation d'un objet JPanel
 	    JPanel pan = new JPanel();
