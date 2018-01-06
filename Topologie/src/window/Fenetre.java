@@ -8,7 +8,7 @@ public class Fenetre extends JFrame{
 
   public Fenetre(){
 		
-    this.setTitle("LoadRoad");
+    this.setTitle("L'âne");
     this.setSize(300, 120);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setLocationRelativeTo(null);
