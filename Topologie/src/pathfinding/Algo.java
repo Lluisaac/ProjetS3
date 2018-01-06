@@ -70,7 +70,6 @@ public class Algo {
 				}
 			}
 			if(this.c.y != 0 && !this.close.contains(this.topo.find(this.c.x,this.c.y-1)) && Math.abs(this.c.niv - this.topo.find(this.c.x,this.c.y-1).niv)<10 ){
-
 				if( this.open.contains(this.topo.find(this.c.x,this.c.y-1)) && this.topo.find(this.c.x,this.c.y-1).G < this.c.G + 1){
 
 				}else{

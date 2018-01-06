@@ -13,11 +13,6 @@ public class app {
 		topo.ToString();
 		algo.Path();
 		
-		
-		
-		
-		
-		
 	}
 
 }
