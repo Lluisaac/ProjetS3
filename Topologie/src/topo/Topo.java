@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.filechooser.FileSystemView;
 
 public class Topo {
 
@@ -173,6 +174,25 @@ public class Topo {
 		topo.ajoutRiviere(32, 20);
 		topo.toFile("Topo");
 		System.out.println("Done!");
+	}
+
+	public void genererTopologie() {
+		Topo topo = new Topo(64, 64);
+		//topo.ajoutFalaise(0, 0, 63, 63, 6);
+		topo.ajoutChaineMontagne(0, 0, 63, 63, 11);
+		topo.ajoutChaineMontagne(63, 0, 0, 63, 1);
+		topo.ajoutRiviere(32, 20);
+		topo.toFile(FileSystemView.getFileSystemView().getRoots()[0] + "\\topo");
+	}
+
+	public void importerTopologie(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void executerPathfinding() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
