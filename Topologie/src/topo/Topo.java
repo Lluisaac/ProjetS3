@@ -51,8 +51,10 @@ public class Topo {
 	public void ajoutCreux(float hauteur, int x, int y, float pente) {
 		if (hauteur > 0 && x >= 0 && x < this.image.length && y >= 0 && y < this.image.length
 				&& this.image[x][y].getHauteur() > hauteur) {
+			
 			int temp = (int) ((hauteur - (hauteur / pente)) / 2 + (hauteur / pente));
 			this.image[x][y].setHauteur((int) hauteur);
+			
 			ajoutCreux(temp, x + 1, y, pente);
 			ajoutCreux(temp, x - 1, y, pente);
 			ajoutCreux(temp, x, y - 1, pente);
@@ -197,13 +199,14 @@ public class Topo {
 				int x2 = rand.nextInt(this.image.length);
 				int y2 = rand.nextInt(this.image.length);
 				
-				this.ajoutChaineMontagne(x1, y1, x2, y2, (int) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)) / 8 );
+				this.ajoutChaineMontagne(x1, y1, x2, y2, ((int) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)) / 8) + 1);
 			}
 		}
 		
 		if (this.image.length >= 16) {
 			for (int i = 0; i < this.image.length / 16; i++) {
-			this.ajoutPic(rand.nextInt(255) - 190, rand.nextInt(this.image.length), rand.nextInt(this.image.length), (rand.nextInt(20) + 70) / 100f);
+				System.out.println("test");
+				this.ajoutPic(rand.nextInt(64) + 191, rand.nextInt(this.image.length), rand.nextInt(this.image.length), (rand.nextInt(20) + 70) / 100f);
 			}
 		}
 		
@@ -214,19 +217,19 @@ public class Topo {
 				int x2 = rand.nextInt(this.image.length);
 				int y2 = rand.nextInt(this.image.length);
 				
-				this.ajoutFalaise(x1, y1, x2, y2, (int) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)) / 8 );
+				this.ajoutFalaise(x1, y1, x2, y2, ((int) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)) / 8) + 1);
 			}
 		}
 		
 		if (this.image.length >= 32) {
 			for (int i = 0; i < this.image.length / 32; i++) {
-			this.ajoutCreux(hauteur, x, y, (rand.nextInt(20) + 70) / 100f);
+				this.ajoutCreux(rand.nextInt(255) - 190, rand.nextInt(this.image.length), rand.nextInt(this.image.length), (rand.nextInt(20) + 70) / 100f);
 			}
 		}
 		
 		if (this.image.length >= 32) {
 			for (int i = 0; i < this.image.length / 32; i++) {
-			this.ajoutRiviere(32, 20);
+				this.ajoutRiviere(rand.nextInt(this.image.length), rand.nextInt(this.image.length));
 			}
 		}
 		

@@ -32,11 +32,11 @@ public class Algo {
 		int tourDeTest = 0;
 		
 		
-		
 
 		
 		
 		while(!this.open.isEmpty() && !CheminTrouve){
+			System.out.println(c.F + " " + c.G + " " + c.H);
 			
 			tourDeTest++; // pour compter le nombre de tour de l'algo
 			
