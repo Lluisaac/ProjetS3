@@ -33,7 +33,7 @@ public class Fenetre extends JFrame {
 	//Les différentes configurations avec des valeurs par défault
 	private JTextField tfConfigChoix1 = new JTextField("5"); //Base
 	private JTextField tfConfigChoix2 = new JTextField("2"); //Creuser
-	private JTextField tfConfigChoix3 = new JTextField("3"); //Remplir
+	private JTextField tfConfigChoix3 = new JTextField("3"); //Différence de niveau
 	private JTextField tfConfigChoix4 = new JTextField("10"); //Pont
 	
 	private int tabValeursConfig[] = new int[4];
@@ -91,7 +91,7 @@ public class Fenetre extends JFrame {
 				panelConfigChoixTemp.add(this.tfConfigChoix2);
 				break;
 			case 2:
-				labelConfigChoixTemp.setText("Prix pour remplir");
+				labelConfigChoixTemp.setText("Difference de niveau");
 				panelConfigChoixTemp.add(labelConfigChoixTemp);
 				panelConfigChoixTemp.add(this.tfConfigChoix3);
 				break;
@@ -213,16 +213,13 @@ public class Fenetre extends JFrame {
 		String stringCheminFichier = FileSystemView.getFileSystemView().getRoots()[0].toString() + "\\topo.png";
 
 		if (this.cheminFichier.getText().isEmpty()) {
-			// A FAIRE
-			this.topologie.genererTopologie();
+			this.topologie = Topo.topoAleatoire();
 			generateLabel.setText("L'image se trouve à '" + stringCheminFichier + "' ");
 		} else {
-			// A FAIRE
 			stringCheminFichier = this.cheminFichier.getText();
 			generateLabel.setText("Votre image sera modifiée");
+			this.topologie.importerTopologie(stringCheminFichier);
 		}
-
-		this.topologie.importerTopologie(stringCheminFichier);
 
 		JButton generateBouton = new JButton("Executer");
 

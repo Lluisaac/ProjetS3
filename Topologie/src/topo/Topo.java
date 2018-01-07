@@ -116,20 +116,20 @@ public class Topo {
 			return;
 		}
 
-		if (y > 0 && caseVoisines[0] <= this.image[x][y].getHauteur() && caseVoisines[0] <= caseVoisines[1]
+		if (!(this.image[x][y - 1] instanceof Riviere) && caseVoisines[0] <= this.image[x][y].getHauteur() && caseVoisines[0] <= caseVoisines[1]
 				&& caseVoisines[0] <= caseVoisines[2] && caseVoisines[0] <= caseVoisines[3]) {
 			ajoutRiviere(x, y - 1);
 		} 
-		else if (x < this.image.length - 1 && caseVoisines[1] <= this.image[x][y].getHauteur() && caseVoisines[1] <= caseVoisines[0]
+		else if (!(this.image[x + 1][y] instanceof Riviere) && caseVoisines[1] <= this.image[x][y].getHauteur() && caseVoisines[1] <= caseVoisines[0]
 				&& caseVoisines[1] <= caseVoisines[2] && caseVoisines[1] <= caseVoisines[3]) {
 			ajoutRiviere(x + 1, y);
 		} 
-		else if (y < this.image[0].length - 1 && caseVoisines[2] <= this.image[x][y].getHauteur()
+		else if (!(this.image[x][y + 1] instanceof Riviere) && caseVoisines[2] <= this.image[x][y].getHauteur()
 				&& caseVoisines[2] <= caseVoisines[1] && caseVoisines[2] <= caseVoisines[0]
 				&& caseVoisines[2] <= caseVoisines[3]) {
 			ajoutRiviere(x, y + 1);
 		} 
-		else if (x > 0 && caseVoisines[3] <= this.image[x][y].getHauteur() && caseVoisines[3] <= caseVoisines[1]
+		else if (!(this.image[x - 1][y] instanceof Riviere) && caseVoisines[3] <= this.image[x][y].getHauteur() && caseVoisines[3] <= caseVoisines[1]
 				&& caseVoisines[3] <= caseVoisines[2] && caseVoisines[3] <= caseVoisines[0]) {
 			ajoutRiviere(x - 1, y);
 		}
@@ -167,27 +167,155 @@ public class Topo {
 	}
 
 	public static void main(String[] args) {
+		Topo nouvelle = new Topo(128, 128);
+		nouvelle.genererTopologie();
+		nouvelle.toFile("test");
+		nouvelle.importerTopologie("test.png");
+		nouvelle.toFile("test2");
+	}
+	
+	public static Topo topoAleatoire() {
 		Topo topo = new Topo(64, 64);
-		//topo.ajoutFalaise(0, 0, 63, 63, 6);
-		topo.ajoutChaineMontagne(0, 0, 63, 63, 11);
-		topo.ajoutChaineMontagne(63, 0, 0, 63, 1);
-		topo.ajoutRiviere(32, 20);
-		topo.toFile("Topo");
-		System.out.println("Done!");
+		topo.genererTopologie();
+		topo.toFile(FileSystemView.getFileSystemView().getRoots()[0] + "\\topo");
+		return topo;
 	}
 
 	public void genererTopologie() {
-		Topo topo = new Topo(64, 64);
-		//topo.ajoutFalaise(0, 0, 63, 63, 6);
-		topo.ajoutChaineMontagne(0, 0, 63, 63, 11);
-		topo.ajoutChaineMontagne(63, 0, 0, 63, 1);
-		topo.ajoutRiviere(32, 20);
-		topo.toFile(FileSystemView.getFileSystemView().getRoots()[0] + "\\topo");
+		//1 Chaine de montagne par 64 pixels
+		//1 Montagne par 16 pixels
+		//1 Falaise par 128 pixels
+		//1 Creux par 32 Pixels
+		//1 riviere par 32 pixels
+		
+		Random rand = new Random();
+		
+		if (this.image.length >= 64) {
+			for (int i = 0; i < this.image.length / 64; i++) {
+				int x1 = rand.nextInt(this.image.length);
+				int y1 = rand.nextInt(this.image.length);
+				int x2 = rand.nextInt(this.image.length);
+				int y2 = rand.nextInt(this.image.length);
+				
+				this.ajoutChaineMontagne(x1, y1, x2, y2, (int) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)) / 8 );
+			}
+		}
+		
+		if (this.image.length >= 16) {
+			for (int i = 0; i < this.image.length / 16; i++) {
+			this.ajoutPic(rand.nextInt(255) - 190, rand.nextInt(this.image.length), rand.nextInt(this.image.length), (rand.nextInt(20) + 70) / 100f);
+			}
+		}
+		
+		if (this.image.length >= 128) {
+			for (int i = 0; i < this.image.length / 128; i++) {
+				int x1 = rand.nextInt(this.image.length);
+				int y1 = rand.nextInt(this.image.length);
+				int x2 = rand.nextInt(this.image.length);
+				int y2 = rand.nextInt(this.image.length);
+				
+				this.ajoutFalaise(x1, y1, x2, y2, (int) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)) / 8 );
+			}
+		}
+		
+		if (this.image.length >= 32) {
+			for (int i = 0; i < this.image.length / 32; i++) {
+			this.ajoutCreux(hauteur, x, y, (rand.nextInt(20) + 70) / 100f);
+			}
+		}
+		
+		if (this.image.length >= 32) {
+			for (int i = 0; i < this.image.length / 32; i++) {
+			this.ajoutRiviere(32, 20);
+			}
+		}
+		
+		
+		this.ajoutDepartArrivee();
+	}
+	
+	private void ajoutDepartArrivee() {
+		Random rand = new Random();
+		int x1 = rand.nextInt(this.image.length);
+		int y1 = rand.nextInt(this.image[0].length);
+		int x2 = rand.nextInt(this.image.length);
+		int y2 = rand.nextInt(this.image[0].length);
+		
+		this.image[x1][y1] = new DepartArrivee(this.image[x1][y1].getHauteur());
+		this.image[x2][y2] = new DepartArrivee(this.image[x2][y2].getHauteur());
+	}
+
+	public int isColorDepartArrivee(int rgb) {
+		int r = 0;
+		
+		for (int i = 1; i < 256; i++) {
+			if (rgb == new DepartArrivee(i).getCouleur()) {
+				r = i;
+			}
+		}
+		
+		return r;
+	}
+	
+	public int isColorTerre(int rgb) {
+		int r = 0;
+		
+		for (int i = 1; i < 256; i++) {
+			if (rgb == new Terre(i).getCouleur()) {
+				r = i;
+			}
+		}
+		
+		return r;
+	}
+	
+	public int isColorRoute(int rgb) {
+		int r = 0;
+		
+		for (int i = 1; i < 256; i++) {
+			if (rgb == new Route(i).getCouleur()) {
+				r = i;
+			}
+		}
+		
+		return r;
+	}
+	
+	public int isColorRiviere(int rgb) {
+		int r = 0;
+		
+		for (int i = 1; i < 256; i++) {
+			if (rgb == new Riviere(i).getCouleur()) {
+				r = i;
+			}
+		}
+		
+		return r;
 	}
 
 	public void importerTopologie(String text) {
-		// TODO Auto-generated method stub
+		BufferedImage img = null;
+		try {
+		    img = ImageIO.read(new File(text));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
+		this.image = new Case[img.getHeight()][img.getWidth()];
+		
+		for (int i = 0; i < img.getHeight(); i++) {
+			for (int j = 0; j < img.getWidth(); j++) {
+				if (isColorTerre(img.getRGB(i, j)) != 0) {
+					this.image[i][j] = new Terre(isColorTerre(img.getRGB(i, j)));
+				} else if (isColorRiviere(img.getRGB(i, j)) != 0) {
+					this.image[i][j] = new Riviere(isColorRiviere(img.getRGB(i, j)));
+				} else if (isColorRoute(img.getRGB(i, j)) != 0) {
+					this.image[i][j] = new Route(isColorRoute(img.getRGB(i, j)));
+				} else if (isColorDepartArrivee(img.getRGB(i, j)) != 0) {
+					this.image[i][j] = new DepartArrivee(isColorDepartArrivee(img.getRGB(i, j)));
+				}
+			}
+		}
 	}
 
 	public void executerPathfinding() {
