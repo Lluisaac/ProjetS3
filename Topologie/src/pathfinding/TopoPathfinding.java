@@ -1,14 +1,15 @@
 package pathfinding;
 
-public class Topo {
+public class TopoPathfinding {
 	
-	private Case[][] matrice;
+	private CasePathfinding[][] matrice;
+
 	int largeur;
 	int hauteur;
 
 
-	public Topo(int largeur, int hauteur) {
-		this.matrice = new Case[largeur][hauteur];
+	public TopoPathfinding(int largeur, int hauteur) {
+		this.matrice = new CasePathfinding[largeur][hauteur];
 		this.largeur = largeur;
 		this.hauteur = hauteur;
 		
@@ -20,18 +21,22 @@ public class Topo {
 	}*/
 		for (int i = 0; i < this.largeur; i++) {
 		for (int j = 0; j < this.hauteur; j++) {
-			this.matrice[i][j] = new Case();
+			this.matrice[i][j] = new CasePathfinding();
 			if(i==2 && j==2){
-				this.matrice[i][j].niv = 15; 
+				this.matrice[i][j].setNiv(15); 
 			}else{
-				this.matrice[i][j].niv = 0; 
+				this.matrice[i][j].setNiv(0); 
 			}
 		}
 	}
 	}
 	
-	public Case find(int x,int y){
+	public CasePathfinding find(int x,int y){
 		return this.matrice[x][y];
+	}
+	
+	public CasePathfinding[][] getMatrice() {
+		return matrice;
 	}
 
 	
@@ -39,7 +44,7 @@ public class Topo {
 		String x = "";
 		for (int i = 0; i < this.largeur; i++) {
 			for (int j = 0; j < this.hauteur; j++) {
-				x = x + this.matrice[i][j].niv + " ";
+				x = x + this.matrice[i][j].getNiv() + " ";
 			}
 			System.out.println(x);
 			x = "";

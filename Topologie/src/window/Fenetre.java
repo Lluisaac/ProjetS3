@@ -54,11 +54,11 @@ public class Fenetre extends JFrame {
 		b2.setLayout(new BoxLayout(b2, BoxLayout.LINE_AXIS));
 		b2.add(buttonGenerate);
 		b2.add(buttonChange);
-		b2.add(panelConfigGenerator());
 
 		// On positionne maintenant ces trois lignes en colonne
 		container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
 		container.add(b2);
+		container.add(panelConfigGenerator());
 
 		// Le listener des boutons
 		buttonGenerate.addActionListener(new ItemActionGenerate());
@@ -79,6 +79,13 @@ public class Fenetre extends JFrame {
 			
 			JLabel labelConfigChoixTemp = new JLabel();
 			
+			panelConfigChoixTemp.setLayout(new BoxLayout(panelConfigChoixTemp, BoxLayout.PAGE_AXIS));
+			
+			this.tfConfigChoix1.setMaximumSize(new Dimension(300,24));
+			this.tfConfigChoix2.setMaximumSize(new Dimension(300,24));
+			this.tfConfigChoix3.setMaximumSize(new Dimension(300,24));
+			this.tfConfigChoix4.setMaximumSize(new Dimension(300,24));
+			
 			switch (i) {
 			case 0:
 				labelConfigChoixTemp.setText("Prix du mètre");
@@ -86,25 +93,25 @@ public class Fenetre extends JFrame {
 				panelConfigChoixTemp.add(this.tfConfigChoix1);
 				break;
 			case 1:
-				labelConfigChoixTemp.setText("Prix pour creuser");
+				labelConfigChoixTemp.setText("Prix supplémentaire pour creuser");
 				panelConfigChoixTemp.add(labelConfigChoixTemp);
 				panelConfigChoixTemp.add(this.tfConfigChoix2);
 				break;
 			case 2:
-				labelConfigChoixTemp.setText("Difference de niveau");
+				labelConfigChoixTemp.setText("Prix d'un mètre de pont");
 				panelConfigChoixTemp.add(labelConfigChoixTemp);
 				panelConfigChoixTemp.add(this.tfConfigChoix3);
 				break;
 			case 3:
-				labelConfigChoixTemp.setText("Prix d'un mètre de pont");
+				labelConfigChoixTemp.setText("Difference de niveau maximale en %");
 				panelConfigChoixTemp.add(labelConfigChoixTemp);
 				panelConfigChoixTemp.add(this.tfConfigChoix4);
 				break;
-			}			
+			}
 			panelConfigChoix.add(panelConfigChoixTemp);
 		}
 		
-		panelConfig.setLayout(new GridLayout(2, 1));
+		panelConfig.setLayout(new BoxLayout(panelConfig, BoxLayout.PAGE_AXIS));
 		
 		panelConfig.add(panelConfigChoix);
 		

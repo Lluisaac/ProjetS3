@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Algo {
-	Topo topo;
+	TopoPathfinding topo;
 	int[] d; //depart
 	int[] a; //arrivée;
-	Case c; //current
-	List<Case> open = new ArrayList<Case>(); // cases à traiter
-	List<Case> close = new ArrayList<Case>(); // cases traitées
+	CasePathfinding c; //current
+	List<CasePathfinding> open = new ArrayList<CasePathfinding>(); // cases à traiter
+	List<CasePathfinding> close = new ArrayList<CasePathfinding>(); // cases traitées
 	
-	public Algo(Topo topo,int[] d,int[] a) {
+	public Algo(TopoPathfinding topo,int[] d,int[] a) {
 		this.topo = topo;
 		this.d = d;
 		this.a = a;
 	};
 	
 	 
-	public void Path(){
+	public List<CasePathfinding> Path(){
 		
 		this.topo.find(d[0], d[1]).x = d[0];
 		this.topo.find(d[0], d[1]).y = d[1];
@@ -36,7 +36,6 @@ public class Algo {
 		
 		
 		while(!this.open.isEmpty() && !CheminTrouve){
-			System.out.println(c.F + " " + c.G + " " + c.H);
 			
 			tourDeTest++; // pour compter le nombre de tour de l'algo
 			
@@ -55,7 +54,7 @@ public class Algo {
 			IDminF = 0;
 			
 
-			if(this.c.x != 0 && !this.close.contains(this.topo.find(this.c.x-1,this.c.y)) && Math.abs(this.c.niv - this.topo.find(this.c.x-1,this.c.y).niv)<10 ){ //si la case ne dépasse pas de la matrice et n'est pas dans la close list et est accessible
+			if(this.c.x != 0 && !this.close.contains(this.topo.find(this.c.x-1,this.c.y)) && Math.abs(this.c.getNiv() - this.topo.find(this.c.x-1,this.c.y).getNiv())<10 ){ //si la case ne dépasse pas de la matrice et n'est pas dans la close list et est accessible
 				if( this.open.contains(this.topo.find(this.c.x-1,this.c.y)) && this.topo.find(this.c.x-1,this.c.y).G < this.c.G + 1){ // si elle est deja dans l'open list et que son G est plus interessant que c.G +1 alors il existe deja un chemin pour cette case plus optimisé
 
 				}else{
@@ -69,7 +68,7 @@ public class Algo {
 					this.open.add(this.topo.find(this.c.x-1,this.c.y));
 				}
 			}
-			if(this.c.y != 0 && !this.close.contains(this.topo.find(this.c.x,this.c.y-1)) && Math.abs(this.c.niv - this.topo.find(this.c.x,this.c.y-1).niv)<10 ){
+			if(this.c.y != 0 && !this.close.contains(this.topo.find(this.c.x,this.c.y-1)) && Math.abs(this.c.getNiv() - this.topo.find(this.c.x,this.c.y-1).getNiv())<10 ){
 				if( this.open.contains(this.topo.find(this.c.x,this.c.y-1)) && this.topo.find(this.c.x,this.c.y-1).G < this.c.G + 1){
 
 				}else{
@@ -77,14 +76,14 @@ public class Algo {
 					this.topo.find(this.c.x,this.c.y-1).x = this.c.x;
 					this.topo.find(this.c.x,this.c.y-1).y = this.c.y-1;
 					this.topo.find(this.c.x,this.c.y-1).parent = this.c;
-					this.topo.find(this.c.x,this.c.y-1).G =  this.c.G + this.topo.find(this.c.x,this.c.y-1).niv;
+					this.topo.find(this.c.x,this.c.y-1).G =  this.c.G + this.topo.find(this.c.x,this.c.y-1).getNiv();
 			    	this.topo.find(this.c.x,this.c.y-1).H = (Math.abs(this.c.x - a[0]) + Math.abs(this.c.y-1 - a[1])) * multiplieurH;
 			    	this.topo.find(this.c.x,this.c.y-1).F = this.topo.find(this.c.x,this.c.y-1).G + this.topo.find(this.c.x,this.c.y-1).H;
 					this.open.add(this.topo.find(this.c.x,this.c.y-1));
 
 				}
 			}
-			if(this.c.x != this.topo.largeur-1 && !this.close.contains(this.topo.find(this.c.x+1,this.c.y))&& Math.abs(this.c.niv - this.topo.find(this.c.x+1,this.c.y).niv)<10){
+			if(this.c.x != this.topo.largeur-1 && !this.close.contains(this.topo.find(this.c.x+1,this.c.y))&& Math.abs(this.c.getNiv() - this.topo.find(this.c.x+1,this.c.y).getNiv())<10){
 				if( this.open.contains(this.topo.find(this.c.x+1,this.c.y)) && this.topo.find(this.c.x+1,this.c.y).G < this.c.G + 1){
 
 				}else{
@@ -92,14 +91,14 @@ public class Algo {
 					this.topo.find(this.c.x+1,this.c.y).x = this.c.x+1;
 					this.topo.find(this.c.x+1,this.c.y).y = this.c.y;
 					this.topo.find(this.c.x+1,this.c.y).parent = this.c;
-					this.topo.find(this.c.x+1,this.c.y).G =  this.c.G + this.topo.find(this.c.x+1,this.c.y).niv;
+					this.topo.find(this.c.x+1,this.c.y).G =  this.c.G + this.topo.find(this.c.x+1,this.c.y).getNiv();
 			    	this.topo.find(this.c.x+1,this.c.y).H = (Math.abs(this.c.x+1 - a[0]) + Math.abs(this.c.y - a[1])) * multiplieurH;
 			    	this.topo.find(this.c.x+1,this.c.y).F = this.topo.find(this.c.x+1,this.c.y).G + this.topo.find(this.c.x+1,this.c.y).H;
 					this.open.add(this.topo.find(this.c.x+1,this.c.y));
 
 				}
 			}
-			if(this.c.y != this.topo.hauteur-1 && !this.close.contains(this.topo.find(this.c.x,this.c.y+1))&& Math.abs(this.c.niv - this.topo.find(this.c.x,this.c.y+1).niv)<10){
+			if(this.c.y != this.topo.hauteur-1 && !this.close.contains(this.topo.find(this.c.x,this.c.y+1))&& Math.abs(this.c.getNiv() - this.topo.find(this.c.x,this.c.y+1).getNiv())<10){
 				if( this.open.contains(this.topo.find(this.c.x,this.c.y+1)) && this.topo.find(this.c.x,this.c.y+1).G < this.c.G + 1){
 
 				}else{
@@ -107,7 +106,7 @@ public class Algo {
 					this.topo.find(this.c.x,this.c.y+1).x = this.c.x;
 					this.topo.find(this.c.x,this.c.y+1).y = this.c.y+1;
 					this.topo.find(this.c.x,this.c.y+1).parent = this.c;
-					this.topo.find(this.c.x,this.c.y+1).G =  this.c.G + this.topo.find(this.c.x,this.c.y+1).niv;
+					this.topo.find(this.c.x,this.c.y+1).G =  this.c.G + this.topo.find(this.c.x,this.c.y+1).getNiv();
 			    	this.topo.find(this.c.x,this.c.y+1).H = (Math.abs(this.c.x - a[0]) + Math.abs(this.c.y+1 - a[1])) * multiplieurH;
 			    	this.topo.find(this.c.x,this.c.y+1).F = this.topo.find(this.c.x,this.c.y+1).G + this.topo.find(this.c.x,this.c.y+1).H;
 					this.open.add(this.topo.find(this.c.x,this.c.y+1));
@@ -125,27 +124,28 @@ public class Algo {
 		} //fin while
 		
 		if(CheminTrouve){
-			List<Case> optimal = new ArrayList<Case>();
-			
+			List<CasePathfinding> optimal = new ArrayList<CasePathfinding>();
+			optimal.add(0, this.topo.find(d[0], d[1]));
 			while(this.c.x != d[0] || this.c.y != d[1]){   // retourner et stocker le chemin dans la liste "optimal"
 				optimal.add(0, this.c);
 				this.c = this.c.parent;
 			}
 		
-	    	System.out.println("Chemin optimal :  ");
+	    	/*System.out.println("Chemin optimal :  ");
 	    	System.out.println("[" + d[0] + d[1] +"]" + " -> ");
-			for (Case n : optimal) {
+			for (CasePathfinding n : optimal) {
 		    	System.out.println("[" + n.x + n.y +"]" + " -> ");
 
 			}
 	    	System.out.println("arrivée ! (longueur du chemin : " + optimal.size() + " )");
-	    	System.out.println("Pour ce résultat l'algo à fait " + tourDeTest + " tests");
+	    	System.out.println("Pour ce résultat l'algo à fait " + tourDeTest + " tests");*/
+	    	return optimal;
 
 		}else{
 	    	System.out.println("aucun chemin ne mène au point d'arrivée");
 
 		}
-		
+		return close;		
 	}
 	
 }
