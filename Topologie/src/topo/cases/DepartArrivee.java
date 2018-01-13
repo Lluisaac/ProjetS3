@@ -1,14 +1,10 @@
-package topo;
+package topo.cases;
 
 public class DepartArrivee extends Case {
 
 	public DepartArrivee(int h) {
 			super(h);
 		}
-
-	void setHauteur(int h) {
-		this.hauteur = h;
-	}
 
 	public int getCouleur() {
 		int red = (this.hauteur << 16) & 0x00FF0000;
@@ -17,4 +13,14 @@ public class DepartArrivee extends Case {
 		return 0xFF000000 | red | green | blue;
 	}
 
+	public static int isSameCouleur(int rgb) {
+			int r = 0;
+
+			for (int i = 1; i < 256; i++) {
+				if (rgb == new DepartArrivee(i).getCouleur()) {
+					r = i;
+				}
+			}
+			return r;
+	}
 }

@@ -1,6 +1,6 @@
-package topo;
+package topo.cases;
 
-abstract class Case {
+public abstract class Case {
 	
 	protected int hauteur;
 	
@@ -8,7 +8,9 @@ abstract class Case {
 		this.hauteur = h;
 	}
 
-	abstract void setHauteur(int h);
+	public void setHauteur(int h) {
+		this.hauteur = h;
+	}
 	
 	public int getHauteur() {
 		return this.hauteur;
