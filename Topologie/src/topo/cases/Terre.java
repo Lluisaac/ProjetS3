@@ -1,13 +1,9 @@
-package topo;
+package topo.cases;
 
 public class Terre extends Case {
 
 	public Terre(int h) {
 		super(h);
-	}
-	
-	public void setHauteur(int h) {
-		this.hauteur = h;
 	}
 
 	public int getCouleur() {
@@ -15,5 +11,17 @@ public class Terre extends Case {
 		int green = (this.hauteur << 8) & 0x0000FF00;
 		int blue = 0 & 0x000000FF;
 		return 0xFF000000 | red | green | blue;
+	}
+
+	public static int isSameCouleur(int rgb) {
+		int r = 0;
+
+		for (int i = 1; i < 256; i++) {
+			if (rgb == new Terre(i).getCouleur()) {
+				r = i;
+			}
+		}
+
+		return r;
 	}
 }

@@ -31,10 +31,10 @@ public class Fenetre extends JFrame {
 															// fichier
 	
 	//Les différentes configurations avec des valeurs par défault
-	private JTextField tfConfigChoix1 = new JTextField("5"); //Base
-	private JTextField tfConfigChoix2 = new JTextField("2"); //Creuser
-	private JTextField tfConfigChoix3 = new JTextField("3"); //Différence de niveau
-	private JTextField tfConfigChoix4 = new JTextField("10"); //Pont
+	private JTextField tfConfigChoix1 = new JTextField("1"); //Base
+	private JTextField tfConfigChoix2 = new JTextField("5"); //Creuser
+	private JTextField tfConfigChoix3 = new JTextField("3"); //Pont
+	private JTextField tfConfigChoix4 = new JTextField("10"); //Différence de niveau
 	
 	private int tabValeursConfig[] = new int[4];
 	
@@ -168,7 +168,7 @@ public class Fenetre extends JFrame {
 
 	public void creerPanelExecute() {
 
-		this.topologie.executerPathfinding();
+		this.topologie.executerPathfinding(Integer.parseInt(this.tfConfigChoix1.getText()), Integer.parseInt(this.tfConfigChoix2.getText()), Integer.parseInt(this.tfConfigChoix3.getText()), Integer.parseInt(this.tfConfigChoix4.getText()));
 
 		// Pour l'ecran d'execution
 		JPanel executePanel = new JPanel();

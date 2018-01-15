@@ -12,6 +12,13 @@ import javax.swing.filechooser.FileSystemView;
 import pathfinding.Algo;
 import pathfinding.CasePathfinding;
 import pathfinding.TopoPathfinding;
+import topo.cases.Case;
+import topo.cases.DepartArrivee;
+import topo.cases.Pont;
+import topo.cases.Riviere;
+import topo.cases.Route;
+import topo.cases.Terre;
+import topo.cases.Tunnel;
 
 public class Topo {
 
@@ -180,7 +187,7 @@ public class Topo {
 	}
 
 	public static Topo topoAleatoire() {
-		Topo topo = new Topo(64, 64);
+		Topo topo = new Topo(320, 320);
 		topo.genererTopologie();
 		topo.toFile(FileSystemView.getFileSystemView().getRoots()[0] + "\\topo");
 		return topo;
@@ -206,6 +213,15 @@ public class Topo {
 		this.genererAleatoirementRivieres();
 
 		this.ajoutDepartArrivee();
+		
+		this.ajoutFakeRiviere();
+	}
+
+	private void ajoutFakeRiviere() {
+		for (int i = 0; i < this.image.length; i++) {
+			this.image[this.image.length/2][i] = new Riviere(this.image[this.image.length/2][i].getHauteur());
+		}
+		
 	}
 
 	private void mettrePanchaison() {
@@ -350,61 +366,13 @@ public class Topo {
 		this.image[x2][y2] = new DepartArrivee(this.image[x2][y2].getHauteur());
 	}
 
-	public int isColorDepartArrivee(int rgb) {
-		int r = 0;
-
-		for (int i = 1; i < 256; i++) {
-			if (rgb == new DepartArrivee(i).getCouleur()) {
-				r = i;
-			}
-		}
-
-		return r;
-	}
-
-	public int isColorTerre(int rgb) {
-		int r = 0;
-
-		for (int i = 1; i < 256; i++) {
-			if (rgb == new Terre(i).getCouleur()) {
-				r = i;
-			}
-		}
-
-		return r;
-	}
-
-	public int isColorRoute(int rgb) {
-		int r = 0;
-
-		for (int i = 1; i < 256; i++) {
-			if (rgb == new Route(i).getCouleur()) {
-				r = i;
-			}
-		}
-
-		return r;
-	}
-
-	public int isColorRiviere(int rgb) {
-		int r = 0;
-
-		for (int i = 1; i < 256; i++) {
-			if (rgb == new Riviere(i).getCouleur()) {
-				r = i;
-			}
-		}
-
-		return r;
-	}
-
 	public int[] getDepartArrivee() {
 		int[] r = new int[4];
 		boolean firstFound = false;
 
 		for (int i = 0; i < this.image.length; i++) {
 			for (int j = 0; j < this.image.length; j++) {
-				if (0 < this.isColorDepartArrivee(this.image[i][j].getCouleur())) {
+				if (0 < DepartArrivee.isSameCouleur(this.image[i][j].getCouleur())) {
 					if (!firstFound) {
 						r[0] = i;
 						r[1] = j;
@@ -432,45 +400,88 @@ public class Topo {
 
 		for (int i = 0; i < img.getHeight(); i++) {
 			for (int j = 0; j < img.getWidth(); j++) {
-				if (isColorTerre(img.getRGB(i, j)) != 0) {
-					this.image[i][j] = new Terre(isColorTerre(img.getRGB(i, j)));
-				} else if (isColorRiviere(img.getRGB(i, j)) != 0) {
-					this.image[i][j] = new Riviere(isColorRiviere(img.getRGB(i, j)));
-				} else if (isColorRoute(img.getRGB(i, j)) != 0) {
-					this.image[i][j] = new Route(isColorRoute(img.getRGB(i, j)));
-				} else if (isColorDepartArrivee(img.getRGB(i, j)) != 0) {
-					this.image[i][j] = new DepartArrivee(isColorDepartArrivee(img.getRGB(i, j)));
+				if (Terre.isSameCouleur(img.getRGB(i, j)) != 0) {
+					this.image[i][j] = new Terre(Terre.isSameCouleur(img.getRGB(i, j)));
+				} else if (Riviere.isSameCouleur(img.getRGB(i, j)) != 0) {
+					this.image[i][j] = new Riviere(Riviere.isSameCouleur(img.getRGB(i, j)));
+				} else if (Route.isSameCouleur(img.getRGB(i, j)) != 0) {
+					this.image[i][j] = new Route(Route.isSameCouleur(img.getRGB(i, j)));
+				} else if (DepartArrivee.isSameCouleur(img.getRGB(i, j)) != 0) {
+					this.image[i][j] = new DepartArrivee(DepartArrivee.isSameCouleur(img.getRGB(i, j)));
+				} else if (Tunnel.isSameCouleur(img.getRGB(i, j)) != 0) {
+					this.image[i][j] = new Tunnel(Tunnel.isSameCouleur(img.getRGB(i, j)));
+				} else if (Pont.isSameCouleur(img.getRGB(i, j)) != 0) {
+					this.image[i][j] = new Pont(Pont.isSameCouleur(img.getRGB(i, j)));
 				}
 			}
 		}
 	}
 
-	public void executerPathfinding() {
+	public void executerPathfinding(int base, int pont, int tunnel, int diff) {
 		TopoPathfinding topo = new TopoPathfinding(this.image.length, this.image[0].length);
 		for (int i = 0; i < this.image.length; i++) {
 			for (int j = 0; j < this.image.length; j++) {
-				
-				topo.getMatrice()[i][j].setNiv(this.image[i][j].getHauteur());
-				
+				if (this.image[i][j] instanceof Riviere) {
+					topo.getMatrice()[i][j].setNiv((this.image[i][j].getHauteur() * -1) - 1000);
+				} else {
+					topo.getMatrice()[i][j].setNiv(this.image[i][j].getHauteur());
+				}
 			}
 		}
-		
+
 		int[] departArrivee = this.getDepartArrivee();
 		int[] d = new int[2], a = new int[2];
 		d[0] = departArrivee[0];
 		d[1] = departArrivee[1];
 		a[0] = departArrivee[2];
 		a[1] = departArrivee[3];
-		Algo algo = new Algo(topo, d, a);
-		this.dessinerChemin(algo.Path());
+		Algo algo = new Algo(topo, d, a, diff);
+		algo.path((int) tunnel / base, (int) pont / base);
+		this.dessinerChemin(algo, algo.faireRoute());
 		this.toFile(FileSystemView.getFileSystemView().getRoots()[0] + "\\topo");
 	}
 
-	private void dessinerChemin(List<CasePathfinding> path) {
-		for (CasePathfinding n : path) {
-			this.image[n.x][n.y] = new Route(this.image[n.x][n.y].getHauteur()); 
-		}
-				
-	}
+	private void dessinerChemin(Algo algo, List<CasePathfinding> path) {
+		if (path != null) {
+			CasePathfinding previous = path.get(0);
+			for (CasePathfinding n : path) {
+				int diff = (Math.abs(n.x - previous.x) + Math.abs(n.y - previous.y));
+				if (diff > 1) {
+					// Si l'écart est supérieur a 1 entre deux cases, donc qu'il
+					// y a un pont ou une rivière
 
+					boolean isDiffX = n.y - previous.y == 0;
+					boolean isDiffPositive = n.x - previous.x + n.y - previous.y > 0;
+					if (isDiffPositive) {
+						for (int i = 1; i < diff; i++) {
+							if (algo.topo.find((previous.x + n.x)/2, (previous.y + n.y)/2).getNiv() < 0 || algo.topo.find(isDiffX ? (previous.x + i) : (previous.x), isDiffX ? (previous.y)
+									: (previous.y + i)).getNiv() < algo.topo.find((previous.x), (previous.y)).getNiv()) {
+								this.image[isDiffX ? (previous.x + i) : (previous.x)][isDiffX ? (previous.y)
+										: (previous.y + i)] = new Pont((n.getNiv() + 1000) * -1);
+							} else {
+								this.image[isDiffX ? (previous.x + i) : (previous.x)][isDiffX ? (previous.y)
+										: (previous.y + i)] = new Tunnel(
+												this.image[previous.x][previous.y].getHauteur());
+							}
+						}
+					} else {
+						for (int i = -1; i < -diff; i--) {
+							if (algo.topo.find((previous.x + n.x)/2, (previous.y + n.y)/2).getNiv() < 0 || algo.topo.find(isDiffX ? (previous.x + i) : (previous.x), isDiffX ? (previous.y)
+									: (previous.y + i)).getNiv() < algo.topo.find((previous.x + n.x), (previous.y + n.y)).getNiv()) {
+								this.image[isDiffX ? (previous.x + i) : (previous.x)][isDiffX ? (previous.y)
+										: (previous.y + i)] = new Pont((n.getNiv() + 1000) * -1);
+							} else {
+								this.image[isDiffX ? (previous.x + i) : (previous.x)][isDiffX ? (previous.y)
+										: (previous.y + i)] = new Tunnel(
+												this.image[previous.x][previous.y].getHauteur());
+							}
+						}
+					}
+				}
+				this.image[n.x][n.y] = new Route(this.image[n.x][n.y].getHauteur());
+				previous = n;
+				System.out.println(n.x + " " + n.y + " " + diff);
+			}
+		}
+	}
 }
